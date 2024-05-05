@@ -9,7 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
-#include <headers/ResourceManager.hpp>
+#include <ResourceManager.hpp>
 
 int main()
 {
@@ -29,7 +29,7 @@ int main()
 
     int height = MinHeight * ratio, width = MinWidth * ratio;
 
-    sf::RenderWindow window(sf::VideoMode(width, height), "Italy Simulator", sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(width, height), "Totally Original Social Media App", sf::Style::Close);
     window.setPosition(sf::Vector2i(window.getPosition().x, 0));
     window.setFramerateLimit(60);
 
@@ -49,10 +49,10 @@ int main()
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F11)
             {
                 if (!isFullScreen) {
-                    window.create(desktop, "Italy Simulator", sf::Style::Fullscreen);
+                    window.create(desktop, "Totally Original Social Media App", sf::Style::Fullscreen);
                 }
                 else {
-                    window.create(sf::VideoMode(width, height), "Italy Simulator", sf::Style::Close);
+                    window.create(sf::VideoMode(width, height), "Totally Original Social Media App", sf::Style::Close);
                     window.setPosition(sf::Vector2i(window.getPosition().x, 0));
                 }
                 isFullScreen = !isFullScreen;
@@ -62,7 +62,7 @@ int main()
 
         if (1) {
             window.clear();
-            window.draw(sf::Sprite(rm.CreateSprite("Italy.png"))); //Example
+            window.draw(sf::Sprite(rm.CreateSprite("Totally Original Social Media App"))); //Example
             window.display();
         }
     }

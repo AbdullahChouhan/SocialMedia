@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(SocialMediaClient)
+project(SocialMedia)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(SFML_STATIC_LIBRARIES FALSE)
