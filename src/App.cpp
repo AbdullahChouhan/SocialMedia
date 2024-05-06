@@ -47,7 +47,20 @@ void App::update() {
 
 void App::render() {
     window.clear();
-    //window.draw();
+    switch (state)
+    {
+    case AppState::Login:
+        
+        break;
+    case AppState::Feed:
+
+        break;
+    case AppState::Settings:
+
+        break;
+    default:
+        break;
+    }
     window.display();
 }
 
@@ -58,8 +71,6 @@ void App::Run() {
     {
         app.handleEvents();
         app.update();
-        if (1) {
-            app.render();
-        }
+        app.render();
     }
 }
