@@ -6,10 +6,12 @@
 
 class ResourceManager {
     private:
+        ResourceManager();
         std::unordered_map<std::string, sf::Texture> textures;
         std::unordered_map<std::string, sf::SoundBuffer> soundbuffers;
         std::unordered_map<std::string, sf::Font> fonts;
     public:
+        static ResourceManager& GetInstance();
         void LoadTexture(const std::string& filename);
         void LoadSoundBuffer(const std::string& filename);
         void LoadFont(const std::string& filename);

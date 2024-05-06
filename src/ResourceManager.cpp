@@ -4,6 +4,13 @@
 
 #include <ResourceManager.hpp>
 
+ResourceManager::ResourceManager() {}
+
+ResourceManager& ResourceManager::GetInstance() {
+    static ResourceManager instance;
+    return instance;
+}
+
 void ResourceManager::LoadTexture(const std::string& filename) {
     sf::Texture texture;
     if (!texture.loadFromFile("Resources/Textures/" + filename)) {
