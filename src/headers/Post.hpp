@@ -16,7 +16,7 @@ class Post {
         std::vector<std::string*> likedBy;
         std::vector<sf::Texture> textures;
     public:
-        Post() = default;
+        Post();
         Post(std::string* id, std::string title, std::string content);
         void AddLike(std::string* id);
         void RemoveLike(std::string* id);
