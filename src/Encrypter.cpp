@@ -7,7 +7,7 @@ Encrypter& Encrypter::GetInstance() {
     return instance;
 }
 
-std::string encrypt(const std::string& plaintext, const std::string& key, std::vector<CryptoPP::byte>& iv) {
+std::string Encrypter::encrypt(const std::string& plaintext, const std::string& key, std::vector<CryptoPP::byte>& iv) const {
     std::string ciphertext;
 
     if (iv.size() != 16 || iv.empty()) {
@@ -32,7 +32,7 @@ std::string encrypt(const std::string& plaintext, const std::string& key, std::v
     return ciphertext;
 }
 
-std::string decrypt(const std::string& ciphertext, const std::string& key, const std::vector<CryptoPP::byte>& iv) {
+std::string Encrypter::decrypt(const std::string& ciphertext, const std::string& key, const std::vector<CryptoPP::byte>& iv) const {
     std::string decryptedText;
 
     try {
@@ -48,4 +48,24 @@ std::string decrypt(const std::string& ciphertext, const std::string& key, const
     }
 
     return decryptedText;
+}
+
+std::string Encrypter::hash(const std::string& input) const {
+    std::string hash;
+
+    try {
+        CryptoPP::SHA256 sha;
+        CryptoPP::StringSource(input, true,
+            new CryptoPP::HashFilter(sha,
+                new CryptoPP::HexEncoder(
+                    new CryptoPP::StringSink(hash)
+                )
+            )
+        );
+    } catch(const CryptoPP::Exception& e) {
+        std::cerr << e.what() << std::endl;
+        exit(1);
+    }
+
+    return hash;
 }
