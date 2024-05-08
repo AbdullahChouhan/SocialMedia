@@ -43,6 +43,7 @@ void App::handleEvents() {
 
 void App::update() {
     //Update
+    animations["login"]->update();
 }
 
 void App::render() {
@@ -50,7 +51,7 @@ void App::render() {
     switch (state)
     {
     case AppState::Login:
-        
+        window.draw(animations["login"]->getSprite());
         break;
     case AppState::Feed:
 
@@ -66,11 +67,16 @@ void App::render() {
 
 void App::Run() {
     static App app;
-    ResourceManager rm = ResourceManager::GetInstance();
+    app.rm.LoadTexture("login");
+    app.animations["login"] = new FadeAnimation(app.rm.CreateSprite("login"), "login", 0.01f, 1.0f, 0.0f);
     while (app.window.isOpen())
     {
         app.handleEvents();
         app.update();
         app.render();
     }
+    for (auto& animation : app.animations) {
+        delete animation.second;
+    };
+    app.rm.ClearAll();
 }

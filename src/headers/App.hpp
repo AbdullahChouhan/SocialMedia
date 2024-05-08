@@ -5,10 +5,13 @@
 #include <openssl/aes.h>
 
 #include "ResourceManager.hpp"
+#include "Animations.hpp"
 
 class App {
     private:
         App();
+        ResourceManager rm = ResourceManager::GetInstance();
+        std::unordered_map<std::string, Animation*> animations;
         sf::RenderWindow window;
         int ratio, height, width;
         bool isFullScreen;
