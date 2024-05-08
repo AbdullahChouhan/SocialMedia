@@ -5,10 +5,10 @@ Animation::Animation(const sf::Sprite sprite, const std::string& filename, float
     this->loop = loop;
     this->speed = speed;
     this->frame = 0;
-    this->progress = 0;
+    this->progress = 0.0f;
     std::ifstream file("resources/AnimationData/" + filename + ".json");
     if (file.is_open()) {
-        json = nlohmann::json::parse(file);
+        nlohmann::json json = nlohmann::json::parse(file);
         int MaxLeft = 0;
         for (auto& animation : json["animations"]) {
             for (int i = 0; i < animation["frames"]; i++) {

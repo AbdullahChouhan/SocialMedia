@@ -9,14 +9,11 @@
 
 
 class Animation {
-    private:
-        nlohmann::json json;
     protected:
         sf::Sprite sprite;
         std::vector<sf::IntRect> frames;
-        float speed;
+        float speed, progress;
         int active, loop, frame;
-        float progress = 0.0f;
     public:
         Animation(const sf::Sprite sprite, const std::string& filename, float speed, int loop = 0, int active = 1);
         virtual void update(float speed = -1, int active = -1, int loop = -1);
