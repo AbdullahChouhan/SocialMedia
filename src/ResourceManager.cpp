@@ -9,15 +9,15 @@ ResourceManager& ResourceManager::GetInstance() {
 
 void ResourceManager::LoadTexture(const std::string& filename) {
     sf::Texture texture;
-    if (!texture.loadFromFile("Resources/Textures/" + filename)) {
-        throw std::runtime_error("Failed to load Texture: " + filename);
+    if (!texture.loadFromFile("resources/Textures/" + filename + ".png")) {
+        throw std::runtime_error("Failed to load Texture: " + filename + ".png");
     }
     textures.emplace(filename, std::move(texture));
 }
 void ResourceManager::LoadFont(const std::string& filename) {
     sf::Font font;
-    if (!font.loadFromFile("Resources/Fonts/" + filename)) {
-        throw std::runtime_error("Failed to load Font: " + filename);
+    if (!font.loadFromFile("resources/Fonts/" + filename + ".ttf")) {
+        throw std::runtime_error("Failed to load Font: " + filename + ".ttf");
     }
     fonts.emplace(filename, std::move(font));
 }
