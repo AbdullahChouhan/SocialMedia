@@ -15,10 +15,12 @@ class Animation {
         sf::Sprite sprite;
         std::vector<sf::IntRect> frames;
         float speed;
-        int active, loop, frame, delay;
+        int active, loop, frame;
+        float progress = 0.0f;
     public:
-        Animation(sf::Texture& texture, std::string& filename, float speed, int loop = 0, int active = 1);
+        Animation(const sf::Sprite sprite, const std::string& filename, float speed, int loop = 0, int active = 1);
         virtual void update(float speed = -1, int active = -1, int loop = -1);
+        sf::Sprite getSprite() const;
 };
 
 class FadeAnimation : public Animation {
@@ -26,6 +28,6 @@ class FadeAnimation : public Animation {
         float inRatio, outRatio;
         void updateColour();
     public:
-        FadeAnimation(sf::Texture& texture, std::string& filename, float speed, float inRatio, float outRatio, int loop = 0, int active = 1);
+        FadeAnimation(const sf::Sprite sprite, const std::string& filename, float speed, float inRatio, float outRatio, int loop = 0, int active = 1);
         void update(float speed = -1, int active = -1, int loop = -1) override;
 };
