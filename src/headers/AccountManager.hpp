@@ -9,7 +9,7 @@
 class AccountManager {
     private:
         AccountManager();
-        std::vector<std::string> accounts;
+        nlohmann::json json;
         const std::string key = "mpMaI+W9b+56uF90LNkvr7HKoli77nf3";
     public:
         static AccountManager& GetInstance();

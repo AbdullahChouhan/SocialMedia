@@ -1,12 +1,9 @@
 #include "headers/AccountManager.hpp"
 
 AccountManager::AccountManager() {
-    std::ifstream file("../resources/accounts.json");
+    std::ifstream file("resources/accounts.json");
     if (file.is_open()) {
-        nlohmann::json json = nlohmann::json::parse(file);
-        for (auto& account : json["accounts"]) {
-            accounts.emplace_back(account["username"]);
-        }
+        json = nlohmann::json::parse(file);
     }
     file.close();
 }
@@ -18,8 +15,8 @@ AccountManager& AccountManager::GetInstance() {
 
 int AccountManager::signUp(const std::string& username, const std::string& password) {
     //verify locally
-    for (auto& account : accounts) {
-        if (account == username) {
+    for (auto& account : json["accounts"]) {
+        if (account["username"] == username) {
             return -2;
         }
     }
@@ -28,9 +25,8 @@ int AccountManager::signUp(const std::string& username, const std::string& passw
         return -1;
 
     //Server saved and now save locally
-    std::ofstream file("../resources/accounts.json");
+    std::ofstream file("resources/accounts.json");
     if (file.is_open()) {
-        nlohmann::json json = nlohmann::json::parse(file);
         json["accounts"].push_back({{"username", username}});
         file << json.dump();
         file.close();
@@ -46,25 +42,15 @@ int AccountManager::signIn(const std::string& username, const std::string& passw
     if (1) // Server responded with wrong password
         return -1;
     if (true) {
-        std::ifstream file("../resources/accounts.json");
+        for (auto& account : json["accounts"]) {
+            if (account["username"] == username) {
+                break;
+            }
+            json["accounts"].push_back({{"username", username}});
+        }
+        std::ofstream file("resources/accounts.json");
         if (file.is_open()) {
-            bool found;
-            nlohmann::json json = nlohmann::json::parse(file);
-            for (auto& account : json["accounts"]) {
-                if (account["username"] == username) {
-                    found = true;
-                }
-            }
-            if (!found) {
-                json["accounts"].push_back({{"username", username}});
-                file.close();
-                std::ofstream fileout("../resources/accounts.json");
-                if (fileout.is_open())
-                {
-                    fileout << json.dump();
-                    fileout.close();
-                }
-            }
+            file << json.dump();
         }
         file.close();
         return 1;
