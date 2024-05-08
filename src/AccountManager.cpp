@@ -4,8 +4,11 @@ AccountManager::AccountManager() {
     std::ifstream file("resources/accounts.json");
     if (file.is_open()) {
         json = nlohmann::json::parse(file);
+        file.close();
     }
-    file.close();
+    else {
+        std::cout << "Failed to open accounts.json\n";
+    }
 }
 
 AccountManager& AccountManager::GetInstance() {
@@ -25,12 +28,17 @@ int AccountManager::signUp(const std::string& username, const std::string& passw
         return -1;
 
     //Server saved and now save locally
-    std::ofstream file("resources/accounts.json");
-    if (file.is_open()) {
-        json["accounts"].push_back({{"username", username}});
-        file << json.dump();
-        file.close();
-        return 1;
+    if (true) {
+        std::ofstream file("resources/accounts.json");
+        if (file.is_open()) {
+            json["accounts"].push_back({{"username", username}});
+            file << json.dump();
+            file.close();
+            return 1;
+        }
+        else {
+            std::cout << "Failed to open accounts.json\n";
+        }
     }
     return 0;
 }
@@ -51,8 +59,11 @@ int AccountManager::signIn(const std::string& username, const std::string& passw
         std::ofstream file("resources/accounts.json");
         if (file.is_open()) {
             file << json.dump();
+            file.close();
         }
-        file.close();
+        else {
+            std::cout << "Failed to open accounts.json\n";
+        }
         return 1;
     }
     return 2;
