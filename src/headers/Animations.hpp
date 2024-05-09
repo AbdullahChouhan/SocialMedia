@@ -12,12 +12,16 @@ class Animation {
     protected:
         sf::Sprite sprite;
         std::vector<sf::IntRect> frames;
-        float speed, progress;
+        float speed, frameprogress, fadeprogress;
         int active, loop, frame;
     public:
-        Animation(const sf::Sprite sprite, const std::string& filename, float speed, int loop = 0, int active = 1);
-        virtual void update(float speed = -1, int active = -1, int loop = -1);
+        Animation(sf::Sprite sprite, const std::string& filename, float speed, int loop = 0, int active = 1, sf::Vector2f scale = sf::Vector2f(1, 1));
+        virtual void update(float speed = -1, int active = -1, int loop = -1, sf::Vector2f scale = sf::Vector2f(-1, -1));
         sf::Sprite getSprite() const;
+        void draw(sf::RenderWindow& window);
+        float getSpeed() const;
+        int getActive() const;
+        void setActive(int active);
 };
 
 class FadeAnimation : public Animation {
@@ -25,6 +29,6 @@ class FadeAnimation : public Animation {
         float inRatio, outRatio;
         void updateColour();
     public:
-        FadeAnimation(const sf::Sprite sprite, const std::string& filename, float speed, float inRatio, float outRatio, int loop = 0, int active = 1);
-        void update(float speed = -1, int active = -1, int loop = -1) override;
+        FadeAnimation(sf::Sprite sprite, const std::string& filename, float speed, float inRatio, float outRatio, int loop = 0, int active = 1, sf::Vector2f scale = sf::Vector2f(1, 1));
+        void update(float speed = -1, int active = -1, int loop = -1, sf::Vector2f scale = sf::Vector2f(-1, -1)) override;
 };

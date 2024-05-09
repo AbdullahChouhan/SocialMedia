@@ -1,11 +1,11 @@
 #include "headers/Animations.hpp"
 
-Animation::Animation(const sf::Sprite sprite, const std::string& filename, float speed, int loop, int active) : sprite(sprite) {
+Animation::Animation(sf::Sprite sprite, const std::string& filename, float speed, int loop, int active, sf::Vector2f scale) : sprite(sprite) {
     this->active = active;
     this->loop = loop;
     this->speed = speed;
     this->frame = 0;
-    this->progress = 0.0f;
+    this->frameprogress = 0.0f;
     std::ifstream file("resources/AnimationData/" + filename + ".json");
     if (file.is_open()) {
         nlohmann::json json = nlohmann::json::parse(file);
@@ -21,9 +21,10 @@ Animation::Animation(const sf::Sprite sprite, const std::string& filename, float
     else {
         std::cout << "Failed to open " << filename << ".json\n";
     }
+    this->sprite.setScale(scale);
 }
 
-void Animation::update(float speed, int active, int loop) {
+void Animation::update(float speed, int active, int loop, sf::Vector2f scale) {
     if (speed == 0) {
         return;
     }
@@ -36,26 +37,43 @@ void Animation::update(float speed, int active, int loop) {
     if (speed != -1) {
         this->speed = speed;
     }
-    if (active == 1 && speed > 0) {
-        progress += speed;
-        if (progress >= 1) {
-            while (progress >= 1) {
-                progress -= 1;
+    if (scale.x != -1.f && scale.y != -1.f) {
+        sprite.setScale(scale);
+    }
+    if (this->active == 1 && this->speed > 0) {
+        frameprogress += this->speed;
+        if (frameprogress >= 1) {
+            while (frameprogress >= 1) {
+                frameprogress -= 1;
                 frame = (frame + 1) % frames.size();
             }
             sprite.setTextureRect(frames[frame]);
-            if (loop == 0 && frame >= frames.size() - 1) {
-                speed = 0.0f;
+            if (this->loop == 0 && frame >= frames.size() - 1) {
+                this->speed = 0.0f;
             }
         }
     }   
 }
 
-sf::Sprite Animation::getSprite() const {
-    return sprite;
+void Animation::draw(sf::RenderWindow& window) {
+    if (active == 1) {
+        window.draw(sprite);
+    }
 }
 
-FadeAnimation::FadeAnimation(const sf::Sprite sprite, const std::string& filename, float speed, float inRatio, float outRatio, int loop, int active) : Animation(sprite, filename, speed, loop, active) {
+float Animation::getSpeed() const {
+    return speed;
+}
+
+int Animation::getActive() const {
+    return active;
+}
+
+void Animation::setActive(int active) {
+    this->active = active;
+}
+
+FadeAnimation::FadeAnimation(sf::Sprite sprite, const std::string& filename, float speed, float inRatio, float outRatio, int loop, int active, sf::Vector2f scale) : Animation(sprite, filename, speed, loop, active) {
     if (inRatio + outRatio > 1) {
         throw std::runtime_error("FadeAnimation: inRatio + outRatio must be less than or equal to 1");
     }
@@ -64,16 +82,16 @@ FadeAnimation::FadeAnimation(const sf::Sprite sprite, const std::string& filenam
     updateColour();
 }
 void FadeAnimation::updateColour() {
-    progress += speed;
-    if (progress >= 1.0f)
+    fadeprogress += speed;
+    if (fadeprogress >= 1.0f)
         speed = 0.0f;
     float alpha = 1.0f;
-    if (progress < inRatio) {
-        alpha = progress / inRatio;
+    if (fadeprogress < inRatio) {
+        alpha = fadeprogress / inRatio;
     }
-    else if (progress > 1.0f - outRatio) {
+    else if (fadeprogress > 1.0f - outRatio) {
         if (outRatio > 0)
-            alpha = (1.0f - progress) / outRatio;
+            alpha = (1.0f - fadeprogress) / outRatio;
         if (alpha < 0)
             alpha = 0;
     }
@@ -82,9 +100,9 @@ void FadeAnimation::updateColour() {
     sprite.setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(alpha * 255)));
 }
 
-void FadeAnimation::update(float speed, int active, int loop) {
+void FadeAnimation::update(float speed, int active, int loop, sf::Vector2f scale) {
     if (speed != 0) {
-        Animation::update(speed, active, loop);
+        Animation::update(speed, active, loop, scale);
         updateColour();
     }
 }
