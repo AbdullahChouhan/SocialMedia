@@ -1,8 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 #include <nlohmann/json.hpp>
-#include <openssl/aes.h>
 
 #include "ResourceManager.hpp"
 #include "Animations.hpp"
@@ -13,7 +13,8 @@ class App {
         ResourceManager rm = ResourceManager::GetInstance();
         std::unordered_map<std::string, Animation*> animations;
         sf::RenderWindow window;
-        int ratio, height, width;
+        int height, width;
+        sf::Vector2f scale;
         bool isFullScreen;
         const int MinWidth = 1920, MinHeight = 1080;
         const sf::VideoMode desktop = sf::VideoMode::getDesktopMode();

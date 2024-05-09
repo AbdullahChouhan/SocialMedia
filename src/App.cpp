@@ -1,18 +1,17 @@
 #include "headers/App.hpp"
 
-#include <SFML/Graphics.hpp>
-
 App::App() : isFullScreen(false) {
-    if (desktop.width > desktop.height)
-        ratio = desktop.height / MinHeight;
-    else
-        ratio = desktop.width / MinWidth;
+    scale.y = desktop.height / MinHeight;
+    scale.x = desktop.width / MinWidth;
 
-    height = MinHeight * ratio;
-    width = MinWidth * ratio;
+    height = MinHeight * scale.y;
+    width = MinWidth * scale.x;
 
     window.create(sf::VideoMode(width, height), "Totally Original Social Media App", sf::Style::Close);
-    window.setPosition(sf::Vector2i(window.getPosition().x, 0));
+    if (desktop.width == 1920 && desktop.height == 1080)
+        window.setPosition(sf::Vector2i(0, 0));
+    else
+        window.setPosition(sf::Vector2i(window.getPosition().x, 0));
     window.setFramerateLimit(60);
 }
 
@@ -22,7 +21,10 @@ void App::toggleFullScreen() {
     }
     else {
         window.create(sf::VideoMode(width, height), "Totally Original Social Media App", sf::Style::Close);
-        window.setPosition(sf::Vector2i(window.getPosition().x, 0));
+        if (desktop.width == 1920 && desktop.height == 1080)
+            window.setPosition(sf::Vector2i(0, 0));
+        else
+            window.setPosition(sf::Vector2i(window.getPosition().x, 0));
     }
     isFullScreen = !isFullScreen;
     window.setFramerateLimit(60);
@@ -43,7 +45,19 @@ void App::handleEvents() {
 
 void App::update() {
     //Update
-    animations["login"]->update();
+    if (state == AppState::Login) {
+        if (animations["login1"]->getActive()) {
+            animations["login1"]->update();
+            if (animations["login1"]->getSpeed() == 0.f) {
+                animations["login1"]->setActive(0);
+                rm.UnloadTexture("login1");
+                animations["login2"]->setActive(1);
+            }
+        }
+        if (animations["login2"]->getActive()) {
+            animations["login2"]->update();
+        }
+    }
 }
 
 void App::render() {
@@ -51,7 +65,8 @@ void App::render() {
     switch (state)
     {
     case AppState::Login:
-        window.draw(animations["login"]->getSprite());
+        animations["login1"]->draw(window);
+        animations["login2"]->draw(window);
         break;
     case AppState::Feed:
 
@@ -67,8 +82,10 @@ void App::render() {
 
 void App::Run() {
     static App app;
-    app.rm.LoadTexture("login");
-    app.animations["login"] = new FadeAnimation(app.rm.CreateSprite("login"), "login", 0.01f, 1.0f, 0.0f);
+    app.rm.LoadTexture("login1");
+    app.rm.LoadTexture("login2");
+    app.animations["login1"] = new Animation(app.rm.CreateSprite("login1"), "login1", 0.2f, 0, 1, sf::Vector2f(2.4f, 2.25f));
+    app.animations["login2"] = new Animation(app.rm.CreateSprite("login2"), "login2", 0.2f, 0, 0, sf::Vector2f(2.4f, 2.25f));
     while (app.window.isOpen())
     {
         app.handleEvents();
