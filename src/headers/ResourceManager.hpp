@@ -17,7 +17,7 @@ class ResourceManager {
         void LoadTexture(const std::string& filename);
         void LoadSoundBuffer(const std::string& filename);
         void LoadFont(const std::string& filename);
-        sf::Sprite CreateSprite(const std::string& filename, int ratio = 1);\
+        sf::Sprite CreateSprite(const std::string& filename, int ratio = 1);
         sf::Text CreateText(const std::string& filename, int ratio = 1);
         void AddPost(const std::string& id, const Post& post);
         void RemovePost(const std::string& id);
