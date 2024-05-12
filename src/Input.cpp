@@ -2,7 +2,7 @@
 
 Button::Button(float x, float y, float width, float height, sf::Text Text, int charsize) : shape(sf::Vector2f(width, height)), displayText(Text), active(false) {
     shape.setPosition(x, y);
-    shape.setFillColor(sf::Color(230, 238, 247));
+    shape.setFillColor(sf::Color(28, 28, 30));
     
     displayText.setCharacterSize(charsize);
     displayText.setFillColor(sf::Color::White);
@@ -37,7 +37,7 @@ TextInputField::TextInputField(float x, float y, float width, float height, sf::
     input.clear();
     input = "";
 
-    displayText.setFillColor(sf::Color(171, 176, 184));
+    displayText.setFillColor(sf::Color(44, 44, 46));
 
     inputDisplay.setCharacterSize(charsize);
     inputDisplay.setFillColor(sf::Color::White);

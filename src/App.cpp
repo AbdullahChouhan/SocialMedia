@@ -47,15 +47,24 @@ void App::update() {
     //Update
     if (state == AppState::Login) {
         if (animations["login1"]->getActive()) {
-            animations["login1"]->update();
             if (animations["login1"]->getSpeed() == 0.f) {
                 animations["login1"]->setActive(0);
                 rm.UnloadTexture("login1");
                 animations["login2"]->setActive(1);
             }
+            animations["login1"]->update();
         }
         if (animations["login2"]->getActive()) {
+            if (animations["login2"]->getSpeed() == 0.f) {
+                animations["login2"]->setActive(0);
+                rm.UnloadTexture("login2");
+                animations["login3"]->setActive(1);
+                sf::sleep(sf::seconds(0.5f));
+            }
             animations["login2"]->update();
+        }
+        if (animations["login3"]->getActive()) {
+            animations["login3"]->update();
         }
     }
 }
@@ -67,6 +76,7 @@ void App::render() {
     case AppState::Login:
         animations["login1"]->draw(window);
         animations["login2"]->draw(window);
+        animations["login3"]->draw(window);
         break;
     case AppState::Feed:
 
@@ -84,8 +94,10 @@ void App::Run() {
     static App app;
     app.rm.LoadTexture("login1");
     app.rm.LoadTexture("login2");
-    app.animations["login1"] = new Animation(app.rm.CreateSprite("login1"), "login1", 0.2f, 0, 1, sf::Vector2f(2.4f, 2.25f));
-    app.animations["login2"] = new Animation(app.rm.CreateSprite("login2"), "login2", 0.2f, 0, 0, sf::Vector2f(2.4f, 2.25f));
+    app.rm.LoadTexture("login3");
+    app.animations["login1"] = new Animation(app.rm.CreateSprite("login1"), "login1", 0.17f, 0, 1, sf::Vector2f(2.4f, 2.25f));
+    app.animations["login2"] = new Animation(app.rm.CreateSprite("login2"), "login2", 0.17f, 0, 0, sf::Vector2f(2.4f, 2.25f));
+    app.animations["login3"] = new Animation(app.rm.CreateSprite("login3"), "login3", 0.3f, 0, 0, sf::Vector2f(2.4f, 2.25f));
     while (app.window.isOpen())
     {
         app.handleEvents();
@@ -95,5 +107,6 @@ void App::Run() {
     for (auto& animation : app.animations) {
         delete animation.second;
     };
+    app.animations.clear();
     app.rm.ClearAll();
 }
