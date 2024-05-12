@@ -6,13 +6,20 @@
 
 #include "ResourceManager.hpp"
 #include "Animations.hpp"
+#include "Input.hpp"
+#include "AccountManager.hpp"
 
 class App {
     private:
         App();
+        float zoom = 1.f;
         ResourceManager rm = ResourceManager::GetInstance();
+        AccountManager am = AccountManager::GetInstance();
         std::unordered_map<std::string, Animation*> animations;
         sf::RenderWindow window;
+        std::unordered_map<std::string, sf::Text> texts;
+        std::unordered_map<std::string, Button*> buttons;
+        std::unordered_map<std::string, TextInputField*> textFields;
         int height, width;
         sf::Vector2f scale;
         bool isFullScreen;
@@ -24,6 +31,8 @@ class App {
         void toggleFullScreen();
         void update();
         void render();
+        void init();
+        void end();
     public:
         static void Run();
 };

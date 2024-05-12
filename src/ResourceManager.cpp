@@ -26,10 +26,13 @@ sf::Sprite ResourceManager::CreateSprite(const std::string& filename, int ratio)
     sprite.setScale(ratio, ratio);
     return sprite;
 }
-sf::Text ResourceManager::CreateText(const std::string& filename, int ratio) {
+sf::Text ResourceManager::CreateText(std::string displayText, sf::Vector2f position , const std::string& filename, int ratio) {
     sf::Text text = sf::Text();
+    text.setString(displayText);
     text.setFont(fonts[filename]);
     text.setCharacterSize(24 * ratio);
+    text.setPosition(position);
+    text.setFillColor(sf::Color::White);
     return text;
 }
 void ResourceManager::AddPost(const std::string& id, const Post& post) {

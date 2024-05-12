@@ -1,5 +1,7 @@
 #include "headers/Input.hpp"
 
+Button::Button() {}
+
 Button::Button(float x, float y, float width, float height, sf::Text Text, int charsize) : shape(sf::Vector2f(width, height)), displayText(Text), active(false) {
     shape.setPosition(x, y);
     shape.setFillColor(sf::Color(28, 28, 30));
@@ -33,20 +35,30 @@ void Button::checkClick(const sf::Vector2f& mousePosition) {
     }
 }
 
+void Button::Offset(float x, float y) {
+    shape.setPosition(shape.getPosition().x + x, shape.getPosition().y + y);
+}
+
 TextInputField::TextInputField(float x, float y, float width, float height, sf::Text Text, int charsize) : Button(x, y, width, height, Text, charsize), showCursor(false) {
     input.clear();
     input = "";
 
-    displayText.setFillColor(sf::Color(44, 44, 46));
+    xpos = x;
+    ypos = y;
+    heightpar = height;
 
-    inputDisplay.setCharacterSize(charsize);
+    displayText.setFillColor(sf::Color(100, 100, 102));
+
+    inputDisplay = displayText;
     inputDisplay.setFillColor(sf::Color::White);
     inputDisplay.setString(input);
-    inputDisplay.setPosition(x + 5.f, y + (height - inputDisplay.getGlobalBounds().height) / 2);
+    inputDisplay.setPosition(x + 5.f, y + (height - displayText.getGlobalBounds().height) / 2);
+    displayText.setPosition(x + 5.f, y + (height - displayText.getGlobalBounds().height) / 2);
 
     cursorLine.setFillColor(sf::Color::White);
-    cursorLine.setSize(sf::Vector2f(2.f, inputDisplay.getGlobalBounds().height));
-    cursorLine.setPosition(x + 5.f, y + (height - inputDisplay.getGlobalBounds().height) / 2);
+    cursorLine.setSize(sf::Vector2f(2.f, displayText.getGlobalBounds().height));
+    cursorLine.setPosition(x + 7.f, y + (height - inputDisplay.getGlobalBounds().height) / 2);
+    heightpar = y + (height - inputDisplay.getGlobalBounds().height) / 2;
 }
 
 void TextInputField::draw(sf::RenderWindow& window) {
@@ -73,18 +85,24 @@ void TextInputField::handleInput(sf::Event::TextEvent event) {
     if (active) {
         if (event.unicode == 8) {
             handleBackspace();
+            float real = ypos + (heightpar - inputDisplay.getGlobalBounds().height) / 2;
+            cursorLine.setPosition(sf::Vector2f(xpos + 7.f + inputDisplay.getGlobalBounds().width, heightpar));
         }
         else if (event.unicode < 128) {
             input += event.unicode;
             inputDisplay.setString(input);
+            cursorClock.restart();
+            float real = ypos + (heightpar - inputDisplay.getGlobalBounds().height) / 2;
+            cursorLine.setPosition(sf::Vector2f(xpos + 7.f + inputDisplay.getGlobalBounds().width, heightpar));
         }
     }
 }
 
 void TextInputField::handleBackspace() {
-    if (!input.isEmpty()) {
-        input = input.substring(0, input.getSize() - 1);
+    if (!input.empty()) {
+        input = input.substr(0, input.length() - 1);
         inputDisplay.setString(input);
+        cursorClock.restart();
     }
 }
 
@@ -98,4 +116,8 @@ void TextInputField::updateCursor() {
     else {
         showCursor = false;
     }
+}
+
+std::string TextInputField::getInput() {
+    return input;
 }

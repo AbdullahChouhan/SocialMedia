@@ -3,24 +3,36 @@
 #include <string>
 #include <vector>
 #include <ctime>
+#include <chrono>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
+#include "ResourceManager.hpp"
+#include "Input.hpp"
+
 class Post {
     private:
-        std::string* ownderId;
-        std::string title, content;
-        std::tm date;
+        friend class Feed;
+        ResourceManager rm = ResourceManager::GetInstance();
+        Button likeButton;
+        Button viewComments;
+        std::string ownername;
+        sf::Text title, content;
+        std::time_t date;
         int likes;
         // std::vector<std::Comment> comments;
-        std::vector<std::string*> likedBy;
-        std::vector<sf::Texture> textures;
+        std::vector<std::string> likedBy;
+        enum Activity {none, feeling, thinking, making, celebrating};
+        Activity activity;
     public:
         Post();
-        Post(std::string* id, std::string title, std::string content);
-        void AddLike(std::string* id);
-        void RemoveLike(std::string* id);
-        void AddTexture(sf::Texture texture);
-        void RemoveTexture(int index);
+        Post(std::string owner, sf::Text title, sf::Text content, Activity activity);
+        void AddLike(std::string id);
+        void RemoveLike(std::string id);
+        // void AddSprite(sf::Sprite sprite);
+        // void RemoveSprite(int index);
+        void draw(sf::RenderWindow& window);
+        void Offset(float x, float y);
         // Delete should be called in the app class
 };

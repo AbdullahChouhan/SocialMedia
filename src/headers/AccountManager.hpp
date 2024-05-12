@@ -9,8 +9,8 @@
 class AccountManager {
     private:
         AccountManager();
+        Encrypter encrypter = Encrypter::GetInstance();
         nlohmann::json json;
-        const std::string key = "mpMaI+W9b+56uF90LNkvr7HKoli77nf3";
     public:
         static AccountManager& GetInstance();
         int signUp(const std::string& username, const std::string& password);

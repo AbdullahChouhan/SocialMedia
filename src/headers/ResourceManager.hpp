@@ -18,7 +18,7 @@ class ResourceManager {
         void LoadSoundBuffer(const std::string& filename);
         void LoadFont(const std::string& filename);
         sf::Sprite CreateSprite(const std::string& filename, int ratio = 1);
-        sf::Text CreateText(const std::string& filename, int ratio = 1);
+        sf::Text CreateText(std::string displayText, sf::Vector2f position = sf::Vector2f(0.f, 0.f), const std::string& filename = "OpenSans", int ratio = 1);
         void AddPost(const std::string& id, const Post& post);
         void RemovePost(const std::string& id);
         void UnloadTexture(const std::string& filename);
