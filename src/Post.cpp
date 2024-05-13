@@ -3,17 +3,19 @@
 
 Post::Post() {}
 
-Post::Post(std::string owner, sf::Text title, sf::Text content, Activity activity) {
+Post::Post(std::string owner, sf::Text title, sf::Text content, Activity activity, std::vector<std::string> likedBy, std::vector<Comment> comments, std::time_t date, std::string activityvalue) : likedBy(likedBy), comments(comments) {
     this->ownername = owner;
     this->title = title;
     this->content = content;
     this->activity = activity;
+    this->activityvalue = activityvalue;
+    this->date = date;
     this->likeButton = Button(title.getPosition().x + title.getGlobalBounds().width, title.getPosition().y, 50, 50, rm.CreateText("Like"));
     this->viewComments = Button(title.getPosition().x + title.getGlobalBounds().width + 50, title.getPosition().y, 50, 50, rm.CreateText("Comments"));
     content.setPosition(title.getPosition().x, title.getPosition().y + title.getGlobalBounds().height);
     std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     this->date = currentTime;
-    this->likes = 0;
+    likes = likedBy.size();
 }
 
 void Post::AddLike(std::string id) {

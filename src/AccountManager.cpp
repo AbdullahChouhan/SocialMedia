@@ -16,6 +16,10 @@ AccountManager& AccountManager::GetInstance() {
     return instance;
 }
 
+nlohmann::json AccountManager::getJson() {
+    return json;
+}
+
 int AccountManager::signUp(const std::string& username, const std::string& password) {
     //verify locally
     for (auto& account : json["accounts"]) {

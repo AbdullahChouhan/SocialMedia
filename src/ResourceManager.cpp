@@ -35,17 +35,6 @@ sf::Text ResourceManager::CreateText(std::string displayText, sf::Vector2f posit
     text.setFillColor(sf::Color::White);
     return text;
 }
-void ResourceManager::AddPost(const std::string& id, const Post& post) {
-    if (posts.find(id) == posts.end()) {
-        posts.emplace(id, std::vector<Post>());
-    }
-}
-void ResourceManager::RemovePost(const std::string& id) {
-    auto it = posts.find(id);
-    if (it != posts.end()) {
-        posts.erase(it);
-    }
-}
 void ResourceManager::UnloadTexture(const std::string& filename) {
     auto it = textures.find(filename);
     if (it != textures.end()) {

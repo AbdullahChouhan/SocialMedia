@@ -15,4 +15,5 @@ class AccountManager {
         static AccountManager& GetInstance();
         int signUp(const std::string& username, const std::string& password);
         int signIn(const std::string& username, const std::string& password);
+        nlohmann::json getJson();
 };

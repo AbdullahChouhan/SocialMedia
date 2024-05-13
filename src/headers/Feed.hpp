@@ -10,12 +10,13 @@
 
 class Feed {
     private:
-        Feed(User ActiveUser);
-        User ActiveUser;
+        Feed(User* ActiveUser);
+        User* ActiveUser;
         std::vector<Post*> posts;
     public:
-        static Feed& GetInstance(User ActiveUser);
-        void populateFeed();
+        Feed();
+        static Feed& GetInstance(User* ActiveUser);
+        void populateFeed(std::unordered_map<std::string, User*>& users);
         void scrollFeed(sf::Event::MouseWheelScrollEvent event);
         void drawFeed(sf::RenderWindow& window);
 };

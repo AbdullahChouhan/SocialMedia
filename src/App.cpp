@@ -53,6 +53,9 @@ void App::handleEvents() {
                 textField.second->handleInput(event.text);
             }
         }
+        else if (event.type == sf::Event::MouseWheelScrolled) {
+            feed.scrollFeed(event.mouseWheelScroll);
+        }
     }
 }
 
@@ -81,14 +84,17 @@ void App::update() {
             if (animations["login3"]->getSpeed() == 0.f) {
                 if (textFields["Username"]->getInput() != "" && textFields["Password"]->getInput() != "") {
                     if (buttons["Sign in"]->isActive()) {
-                        if (am.signIn(textFields["Username"]->getInput(), textFields["Password"]->getInput()) == 1)
-                            state = AppState::Feed;
+                        if (am.signIn(textFields["Username"]->getInput(), textFields["Password"]->getInput()) == 1) {
+                            startFeed();
+                        }
                         else
                             buttons["Sign in"]->isActive(0);
                     }
                     else if (buttons["Sign up"]->isActive()) {
-                        if (am.signUp(textFields["Username"]->getInput(), textFields["Password"]->getInput()) == 1)
-                            state = AppState::Feed;
+                        if (am.signUp(textFields["Username"]->getInput(), textFields["Password"]->getInput()) == 1) {
+                            users[textFields["Username"]->getInput()] = new User(textFields["Username"]->getInput());
+                            startFeed();
+                        }
                         else
                             buttons["Sign up"]->isActive(0);
                     }
@@ -132,6 +138,11 @@ void App::render() {
             window.setView(view);
             zoom -= 0.0075f;
         }
+        else {
+            window.setView(window.getDefaultView());
+            window.draw(background);
+            feed.drawFeed(window);
+        }
         break;
     case AppState::Settings:
 
@@ -142,7 +153,39 @@ void App::render() {
     window.display();
 }
 
+void App::populateUsers() {
+    for (auto& account : json["accounts"]) {
+        users[account["username"]] = new User(account["username"]);
+        if (account.find("posts") != account.end()) {
+            for (auto& post : account["posts"]) {
+                std::string title = post["title"];
+                std::string content = post["content"];
+                std::string date = post["date"];
+                int likes = post["likes"];
+                std::vector<std::string> likedBy = post["LikedBy"].get<std::vector<std::string>>();
+                std::vector<Comment> comments;
+                for (auto& comment : post["comments"]) {
+                    std::string username = comment["username"];
+                    std::string content = comment["content"];
+                    comments.push_back(Comment(username, content));
+                }
+                users[account["username"]]->AddPost(Post(account["username"], rm.CreateText(title), rm.CreateText(content), Post::Activity::none, likedBy, comments));
+            }
+        }       
+    }
+}
+
+void App::startFeed() {
+    feed = Feed::GetInstance(users[textFields["Username"]->getInput()]);
+    feed.populateFeed(users);
+    state = AppState::Feed;
+}
+
 void App::init() {
+    json = am.getJson();
+    populateUsers();
+    background.setPosition(sf::Vector2f(0, 0));
+    background.setFillColor(sf::Color(28, 28, 30));
     rm.LoadFont("OpenSans");
     texts["login"] = rm.CreateText("Account Login", sf::Vector2f(750.f, 420.f));
     textFields["Username"] = new TextInputField(750.f, 460.f, 480.f, 50.f, rm.CreateText("Enter Username"));
@@ -167,7 +210,9 @@ void App::end() {
     for (auto& textField : textFields) {
         delete textField.second;
     }
-    animations.clear();
+    for (auto& user : users) {
+        delete user.second;
+    }
     rm.ClearAll();
 }
 
